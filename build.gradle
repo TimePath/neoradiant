@@ -1,0 +1,42 @@
+group 'com.timepath'
+version '1.0-SNAPSHOT'
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:0.13.1513"
+    }
+}
+
+apply plugin: 'kotlin'
+
+repositories {
+    mavenCentral()
+    maven { url 'http://updates.jmonkeyengine.org/maven' }
+}
+
+apply plugin: 'antlr'
+
+generateGrammarSource {
+    def pkg = "com.timepath.q3map"
+    arguments += ["-package", pkg]
+    outputDirectory = new File("${project.buildDir}/generated-src/antlr/main/${pkg.replace('.', '/')}".toString())
+}
+
+compileKotlin.dependsOn(generateGrammarSource)
+
+dependencies {
+    antlr "org.antlr:antlr4:4.5"
+
+    compile "org.jetbrains.kotlin:kotlin-stdlib:0.13.1513"
+
+    compile 'org.apache.commons:commons-math3:3.5'
+
+    def version_jme = '3.0.+'
+    compile "com.jme3:jme3-core:$version_jme"
+    compile "com.jme3:jme3-desktop:$version_jme"
+    compile "com.jme3:jme3-lwjgl:$version_jme"
+    compile "com.jme3:jme3-effects:$version_jme"
+}
